@@ -1,32 +1,36 @@
-// cors_helper.js - Minimal Version
-const express = require('express');
+const express = require('express')
+const request = require('request');
+const bodyParser = require('body-parser')
 const axios = require('axios');
-const router = express.Router();
+const { response } = require('express');
+const jsonParser = bodyParser.json()
+const router = express.Router()
 
-router.post('/', express.raw({ type: '*/*' }), async (req, res) => {
-  try {
-    // Get the raw body and headers
-    const { url, method, headers, body } = JSON.parse(req.body.toString());
-    
-    // Forward everything exactly as received
-    const response = await axios({
-      url,
-      method,
-      headers,
-      data: body,
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity
-    });
-    
-    res.status(response.status).send(response.data);
-  } catch (error) {
-    console.error('Proxy error:', error);
-    res.status(500).json({
-      error: 'Proxy error',
-      message: error.message,
-      details: error.response?.data || null
-    });
+
+router.post('/', jsonParser, (req, res, body) => {
+  const requestUrl = req.body.url;
+  const requestMethod = req.body.method;
+  const requestBodyParam = req.body.bodyParam;
+  const requestHeaders = req.body.headers;
+
+  let axiosConfig = {
+    url: requestUrl,
+    method: requestMethod,
+    headers: requestHeaders,
+  };
+
+  // Check if the requestBodyParam is not an empty object
+  if (Object.keys(requestBodyParam).length !== 0) {
+    axiosConfig.data = requestBodyParam;
   }
+
+  axios(axiosConfig)
+    .then((response) => {
+      res.status(200).json(response.data);
+    })
+    .catch((err) => {
+      res.status(500).json({ message: err });
+    });
 });
 
 module.exports = router;
