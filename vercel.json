@@ -1,20 +1,22 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "server.js",
-        "use": "@now/node"
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "server.js"
-      }
-    ],
-    "functions": {
-      "timeout": 30
+  "version": 2,
+  "builds": [
+    {
+      "src": "cors_helper.js",
+      "use": "@vercel/node"
     }
-  
+  ],
+  "routes": [
+    {
+      "src": "/cors_helper",
+      "dest": "cors_helper.js",
+      "methods": ["POST"]
+    }
+  ],
+  "functions": {
+    "cors_helper.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
   }
-  
+}

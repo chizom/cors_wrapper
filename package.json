@@ -5,8 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "devStart": "nodemon server.js",
-    "start": "node server.js"
+    "devStart": "node cors_helper.js",
+    "start": "node cors_helper.js"
+    
   },
   "keywords": [],
   "author": "",
@@ -27,3 +28,4 @@
     "nodemon": "^2.0.20"
   }
 }
+
